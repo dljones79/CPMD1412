@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -25,6 +26,8 @@ public class ViewFragment extends Fragment {
 
     ArrayList<String> items;
     ArrayAdapter<String> listAdapter;
+    ListView listView;
+    ItemAdapter itemAdapter;
 
     public ViewFragment() {
         // Required empty public constructor
@@ -42,6 +45,8 @@ public class ViewFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
 
+        listView = (ListView) getView().findViewById(R.id.listView);
+
         /*
         ParseQueryAdapter<ParseObject> adapter = new ParseQueryAdapter<ParseObject>(getActivity(), "Item");
         adapter.setTextKey("item");
@@ -55,12 +60,32 @@ public class ViewFragment extends Fragment {
         pQuery.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> parseObjects, ParseException e) {
-                ListView listView = (ListView) getView().findViewById(R.id.listView);
-                ItemAdapter itemAdapter = new ItemAdapter(getActivity(), (ArrayList<ParseObject>) parseObjects);
+                //ListView listView = (ListView) getView().findViewById(R.id.listView);
+                itemAdapter = new ItemAdapter(getActivity(), (ArrayList<ParseObject>) parseObjects);
                 listView.setAdapter(itemAdapter);
             }
         });
 
+       listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+           @Override
+           public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+               ParseObject parseObject = (ParseObject) itemAdapter.getItem(position);
+               parseObject.deleteInBackground();
+
+               ViewFragment frag = new ViewFragment();
+               getFragmentManager().beginTransaction().replace(R.id.viewContainer, frag).commit();
+
+               return true;
+           }
+       });
+
+    }
+
+    public void updateListData(){
+        itemAdapter.notifyDataSetChanged();
+        listView.setAdapter(itemAdapter);
+        listView.refreshDrawableState();
     }
 
 }
