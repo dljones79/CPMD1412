@@ -1,3 +1,9 @@
+///////////////////////////
+// David Jones           //
+// CMD 1412              //
+// Week 1                //
+///////////////////////////
+
 package com.fullsail.djones.android.crossplatformapp;
 
 import android.app.Activity;
@@ -13,6 +19,7 @@ public class ViewActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view);
 
+        // Load up view fragment
         ViewFragment frag = new ViewFragment();
         getFragmentManager().beginTransaction().replace(R.id.viewContainer, frag).commit();
     }

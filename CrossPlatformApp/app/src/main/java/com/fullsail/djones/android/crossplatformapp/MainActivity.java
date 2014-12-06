@@ -1,3 +1,9 @@
+///////////////////////////
+// David Jones           //
+// CMD 1412              //
+// Week 1                //
+///////////////////////////
+
 package com.fullsail.djones.android.crossplatformapp;
 
 import android.app.Activity;
@@ -18,8 +24,11 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Initialize Parse
         Parse.initialize(this, "iiomkK2t6uz93Bq1ExnKlvvBF3iVlu7kjQnm3jKS", "1dYu9k3tsFO4jhnpF975u8IiWv0Gkl4bSPiUt7jd");
 
+        // Get the current user if already logged in and load main fragment
+        // If not logged in, load the ParseLoginBuilder UI
         ParseUser currentUser = ParseUser.getCurrentUser();
         if (currentUser != null){
             MainFragment frag = new MainFragment();
@@ -32,6 +41,8 @@ public class MainActivity extends Activity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
+
+        // Load main fragment after user logs in
         MainFragment frag = new MainFragment();
         getFragmentManager().beginTransaction().replace(R.id.mainContainer, frag).commit();
     }

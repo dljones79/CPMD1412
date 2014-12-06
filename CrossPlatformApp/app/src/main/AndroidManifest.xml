@@ -12,7 +12,7 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="com.fullsail.djones.android.crossplatformapp.MainActivity"
-            android:label="@string/app_name" >
+            android:label="Shop-List" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,7 +21,7 @@
         </activity>
         <activity
             android:name="com.parse.ui.ParseLoginActivity"
-            android:label="@string/app_name"
+            android:label="Shop-List"
             android:launchMode="singleTop" >
             <meta-data
                 android:name="com.parse.ui.ParseLoginActivity.PARSE_LOGIN_ENABLED"
@@ -29,11 +29,11 @@
         </activity>
         <activity
             android:name="com.fullsail.djones.android.crossplatformapp.AddActivity"
-            android:label="@string/title_activity_add" >
+            android:label="Add An Item" >
         </activity>
         <activity
             android:name="com.fullsail.djones.android.crossplatformapp.ViewActivity"
-            android:label="@string/title_activity_view" >
+            android:label="Shopping List" >
         </activity>
     </application>
 

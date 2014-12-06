@@ -1,3 +1,9 @@
+///////////////////////////
+// David Jones           //
+// CMD 1412              //
+// Week 1                //
+///////////////////////////
+
 package com.fullsail.djones.android.crossplatformapp;
 
 
@@ -17,6 +23,7 @@ import com.parse.ParseUser;
  */
 public class MainFragment extends Fragment {
 
+    // Variables
     Button nViewButton;
     Button nAddButton;
     Button nLogButton;
@@ -37,13 +44,16 @@ public class MainFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
 
+        // Link variables to UI components
         nViewButton = (Button)getActivity().findViewById(R.id.viewButton);
         nAddButton = (Button)getActivity().findViewById(R.id.addButton);
         nLogButton = (Button)getActivity().findViewById(R.id.logButton);
 
+        // Set up listeners for buttons
         nViewButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Load view activity
                 Intent intent = new Intent(getActivity(), ViewActivity.class);
                 startActivity(intent);
             }
@@ -52,6 +62,7 @@ public class MainFragment extends Fragment {
         nAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Load add activity
                 Intent intent = new Intent(getActivity(), AddActivity.class);
                 startActivity(intent);
             }
@@ -60,8 +71,10 @@ public class MainFragment extends Fragment {
         nLogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Log current user out
                 ParseUser.logOut();
 
+                // Restart main activity and clear out activity stack
                 Intent intent = new Intent(getActivity(), MainActivity.class);
                 startActivity(intent);
                 getActivity().finish();

@@ -1,3 +1,9 @@
+///////////////////////////
+// David Jones           //
+// CMD 1412              //
+// Week 1                //
+///////////////////////////
+
 package com.fullsail.djones.android.crossplatformapp;
 
 
@@ -24,6 +30,7 @@ import java.util.List;
  */
 public class ViewFragment extends Fragment {
 
+    // Variables
     ArrayList<String> items;
     ArrayAdapter<String> listAdapter;
     ListView listView;
@@ -47,14 +54,7 @@ public class ViewFragment extends Fragment {
 
         listView = (ListView) getView().findViewById(R.id.listView);
 
-        /*
-        ParseQueryAdapter<ParseObject> adapter = new ParseQueryAdapter<ParseObject>(getActivity(), "Item");
-        adapter.setTextKey("item");
-
-        ListView listView = (ListView)getActivity().findViewById(R.id.listView);
-        listView.setAdapter(adapter);
-        */
-
+        // Query Parse and by using ItemAdapter, populate the listview
         ParseQuery<ParseObject> pQuery = ParseQuery.getQuery("Item");
         pQuery.whereExists("item");
         pQuery.findInBackground(new FindCallback<ParseObject>() {
@@ -66,6 +66,7 @@ public class ViewFragment extends Fragment {
             }
         });
 
+        // User may longclick to delete an item
        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
            @Override
            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -81,11 +82,4 @@ public class ViewFragment extends Fragment {
        });
 
     }
-
-    public void updateListData(){
-        itemAdapter.notifyDataSetChanged();
-        listView.setAdapter(itemAdapter);
-        listView.refreshDrawableState();
-    }
-
 }

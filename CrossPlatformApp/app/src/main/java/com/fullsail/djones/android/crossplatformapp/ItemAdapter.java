@@ -1,3 +1,9 @@
+///////////////////////////
+// David Jones           //
+// CMD 1412              //
+// Week 1                //
+///////////////////////////
+
 package com.fullsail.djones.android.crossplatformapp;
 
 import android.content.Context;
@@ -13,6 +19,7 @@ import java.util.ArrayList;
 
 /**
  * Created by David on 12/6/14.
+ * Custom Adapter to populate the listview
  */
 public class ItemAdapter extends BaseAdapter {
 
