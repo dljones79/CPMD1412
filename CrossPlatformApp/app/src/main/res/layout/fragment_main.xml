@@ -1,0 +1,43 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.fullsail.djones.android.crossplatformapp.MainFragment"
+    android:background="#ffffa21a"
+    android:clickable="true">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="What Do You Want To Do?"
+        android:id="@+id/titleText"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:textSize="25dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="View List"
+        android:id="@+id/viewButton"
+        android:layout_centerVertical="true"
+        android:layout_alignStart="@+id/titleText" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Item"
+        android:id="@+id/addButton"
+        android:layout_alignTop="@+id/viewButton"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Log Out"
+        android:id="@+id/logButton"
+        android:layout_alignBottom="@+id/addButton"
+        android:layout_toEndOf="@+id/addButton" />
+
+</RelativeLayout>
