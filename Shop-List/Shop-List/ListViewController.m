@@ -7,7 +7,6 @@
 //
 
 #import "ListViewController.h"
-#import "CustomCell.h"
 
 @interface ListViewController ()
 
@@ -18,29 +17,43 @@
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     
+    
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view.
+
     // Create a query
     PFQuery *itemQuery = [PFQuery queryWithClassName:@"Item"];
-    [itemQuery whereKeyExists:@"item"];
+    [itemQuery whereKeyExists:@"item" ];
     
     // Run query
     [itemQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         if (!error){
             NSLog(@"Query Good.");
+            NSLog(@"Array Size: %lu", (unsigned long)objects.count);
             itemArray = objects;
+            [itemTable reloadData];
         } else {
             NSLog(@"Query Bad.");
         }
     }];
 }
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    // Do any additional setup after loading the view.
-}
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return itemArray.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -59,7 +72,9 @@
     
     PFObject *pObj = [itemArray objectAtIndex:indexPath.row];
     itemName = [pObj objectForKey:@"item"];
-    quantity = [pObj objectForKey:@"quantity"];
+    qty = [pObj objectForKey:@"quantity"];
+    quantity = [qty stringValue];
+    //NSLog(@"Item Name: %@",itemName);
     
     CustomCell *newCell = [tableView dequeueReusableCellWithIdentifier:@"customCell"];
     newCell.name.text = itemName;
@@ -68,11 +83,32 @@
     return newCell;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+-(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return itemArray.count;
+    PFObject *pObj = [itemArray objectAtIndex:indexPath.row];
+    [pObj removeObjectForKey:@"item"];
+    [pObj saveInBackground];
+    
+    // Create a query
+    PFQuery *itemQuery = [PFQuery queryWithClassName:@"Item"];
+    [itemQuery whereKeyExists:@"item" ];
+    
+    // Run query
+    [itemQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (!error){
+            NSLog(@"Query Good.");
+            NSLog(@"Array Size: %lu", (unsigned long)objects.count);
+            itemArray = objects;
+            [itemTable reloadData];
+        } else {
+            NSLog(@"Query Bad.");
+        }
+    }];
 }
 
+-(IBAction)onBack:(id)sender{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
 
 /*
 #pragma mark - Navigation

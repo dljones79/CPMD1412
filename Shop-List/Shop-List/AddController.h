@@ -16,6 +16,7 @@
     IBOutlet UITextField *itemName;
     IBOutlet UITextField *quantity;
     IBOutlet UIButton *addButton;
+    IBOutlet UIBarButtonItem *backButton;
 }
 
 -(IBAction)onAdd:(id)sender;

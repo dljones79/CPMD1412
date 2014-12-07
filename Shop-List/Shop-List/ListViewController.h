@@ -10,14 +10,17 @@
 #import <Parse/Parse.h>
 #import <ParseUI/ParseUI.h>
 #import "ViewController.h"
+#import "CustomCell.h"
 
-@interface ListViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
+@interface ListViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 {
-    IBOutlet UITableView *tableView;
+    IBOutlet UITableView *itemTable;
+    IBOutlet UIBarButtonItem *backButton;
     
     NSArray *itemArray;
     NSString *itemName;
     NSString *quantity;
+    NSNumber *qty;
 }
 
 @end

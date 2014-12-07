@@ -71,13 +71,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Add Item" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="bnT-6r-g4E">
-                                <rect key="frame" x="125" y="36" width="70" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Item: " lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="bnb-ye-tWQ">
                                 <rect key="frame" x="16" y="126" width="44" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -114,11 +107,25 @@
                                     <action selector="onAdd:" destination="x9B-3i-Ss5" eventType="touchUpInside" id="wZk-vt-5DQ"/>
                                 </connections>
                             </button>
+                            <navigationBar contentMode="scaleToFill" id="mjR-zi-Qpd">
+                                <rect key="frame" x="0.0" y="25" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <items>
+                                    <navigationItem title="Add Item" id="5a0-qn-ww4">
+                                        <barButtonItem key="leftBarButtonItem" title="Back" id="XVb-8X-6HA">
+                                            <connections>
+                                                <action selector="onBack:" destination="x9B-3i-Ss5" id="cMI-mC-Dbc"/>
+                                            </connections>
+                                        </barButtonItem>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
                         </subviews>
                         <color key="backgroundColor" red="1" green="0.50196081400000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
                     <connections>
                         <outlet property="addButton" destination="zJC-5U-JUm" id="6SA-Ux-I0i"/>
+                        <outlet property="backButton" destination="XVb-8X-6HA" id="voU-1M-EhZ"/>
                         <outlet property="itemName" destination="JQz-JI-JbT" id="btN-7p-bIB"/>
                         <outlet property="quantity" destination="SlZ-Ma-BE3" id="3cF-5t-zdL"/>
                     </connections>
@@ -135,19 +142,12 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Shopping List" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="kor-OL-xyt">
-                                <rect key="frame" x="107" y="36" width="107" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="Lm9-2i-om4">
                                 <rect key="frame" x="16" y="72" width="288" height="461"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="Kiw-xD-cJ0">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="customCell" id="Kiw-xD-cJ0" customClass="CustomCell">
                                         <rect key="frame" x="0.0" y="0.0" width="288" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Kiw-xD-cJ0" id="yvF-jE-e9g">
@@ -169,14 +169,36 @@
                                                 </label>
                                             </subviews>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="name" destination="DWd-7L-E7G" id="Mqo-b6-RGE"/>
+                                            <outlet property="quantity" destination="ErV-8U-JnM" id="Ye5-Gv-ufz"/>
+                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="AVc-E9-4wp" id="NTe-we-5Qu"/>
+                                    <outlet property="delegate" destination="AVc-E9-4wp" id="eGY-P2-zZ4"/>
+                                </connections>
                             </tableView>
+                            <navigationBar contentMode="scaleToFill" id="Lr7-cv-9v9">
+                                <rect key="frame" x="0.0" y="25" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <items>
+                                    <navigationItem title="Shopping List" id="EsI-Ae-0af">
+                                        <barButtonItem key="leftBarButtonItem" title="Back" id="fsn-Lj-BkX">
+                                            <connections>
+                                                <action selector="onBack:" destination="AVc-E9-4wp" id="ODo-9e-ECH"/>
+                                            </connections>
+                                        </barButtonItem>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
                         </subviews>
                         <color key="backgroundColor" red="1" green="0.50196081400000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
                     <connections>
-                        <outlet property="tableView" destination="Lm9-2i-om4" id="E5e-VT-uyv"/>
+                        <outlet property="backButton" destination="fsn-Lj-BkX" id="XTw-YM-QVu"/>
+                        <outlet property="itemTable" destination="Lm9-2i-om4" id="ONe-bt-OIZ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uOf-q5-DaB" userLabel="First Responder" sceneMemberID="firstResponder"/>
