@@ -45,6 +45,13 @@ public class MainActivity extends Activity {
                             startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                         }
                     })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            MainFragment frag = new MainFragment();
+                            getFragmentManager().beginTransaction().replace(R.id.mainContainer, frag).commit();
+                        }
+                    })
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .show();
         } else {
@@ -116,4 +123,6 @@ public class MainActivity extends Activity {
         NetworkInfo nInfo = cManager.getActiveNetworkInfo();
         return nInfo != null && nInfo.isConnected();
     }
+
+
 }

@@ -8,7 +8,10 @@ package com.fullsail.djones.android.crossplatformapp;
 
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,6 +54,12 @@ public class MainFragment extends Fragment {
         nAddButton = (Button)getActivity().findViewById(R.id.addButton);
         nLogButton = (Button)getActivity().findViewById(R.id.logButton);
 
+        if (!networkConnected()){
+            nViewButton.setEnabled(false);
+            nAddButton.setEnabled(false);
+            nLogButton.setEnabled(false);
+        }
+
         // Set up listeners for buttons
         nViewButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,5 +100,12 @@ public class MainFragment extends Fragment {
 
 
 
+    }
+
+    // Custom method to test for network connection
+    private boolean networkConnected() {
+        ConnectivityManager cManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo nInfo = cManager.getActiveNetworkInfo();
+        return nInfo != null && nInfo.isConnected();
     }
 }

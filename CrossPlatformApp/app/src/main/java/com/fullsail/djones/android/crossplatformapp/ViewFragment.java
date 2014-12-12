@@ -9,8 +9,12 @@ package com.fullsail.djones.android.crossplatformapp;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +33,8 @@ import com.parse.ParseQuery;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,6 +50,9 @@ public class ViewFragment extends Fragment {
     ListView listView;
     ItemAdapter itemAdapter;
     Button editButton;
+    Timer timer;
+    TimerTask timerTask;
+    final Handler handler = new Handler();
 
     public ViewFragment() {
         // Required empty public constructor
@@ -75,6 +84,12 @@ public class ViewFragment extends Fragment {
                 listView.setAdapter(itemAdapter);
             }
         });
+
+        // Start a timer that polls Parse in intervals
+        // Only if there is a network connection
+        if (networkConnected()) {
+            startTimer();
+        }
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -152,8 +167,17 @@ public class ViewFragment extends Fragment {
                return true;
            }
          });
+    }
 
+    // When application opens from background
+    // Start timer if it isn't already running
+    @Override
+    public void onResume(){
+        super.onResume();
 
+        if (timer == null) {
+            startTimer();
+        }
     }
 
     // Validate numeric text
@@ -162,5 +186,43 @@ public class ViewFragment extends Fragment {
         Pattern pattern = Pattern.compile(QUANTITY_PATTERN);
         Matcher matcher = pattern.matcher(quantity);
         return matcher.matches();
+    }
+
+    // Start polling timer
+    public void startTimer() {
+        timer = new Timer();
+        initializeTimer();
+        timer.schedule(timerTask, 5000, 10000);
+    }
+
+    // Initialize the timer task and perform Parse polling
+    public void initializeTimer(){
+        timerTask = new TimerTask(){
+            public void run(){
+                handler.post(new Runnable(){
+                    public void run() {
+                        // Query Parse and by using ItemAdapter, populate the listview
+                        ParseQuery<ParseObject> pQuery = ParseQuery.getQuery("Item");
+                        pQuery.whereExists("item");
+                        pQuery.findInBackground(new FindCallback<ParseObject>() {
+                            @Override
+                            public void done(List<ParseObject> parseObjects, ParseException e) {
+                                //ListView listView = (ListView) getView().findViewById(R.id.listView);
+                                itemAdapter = new ItemAdapter(getActivity(), (ArrayList<ParseObject>) parseObjects);
+                                listView.setAdapter(itemAdapter);
+                            }
+                        });
+                    }
+                });
+
+            }
+        };
+    }
+
+    // Custom method to test for network connection
+    private boolean networkConnected() {
+        ConnectivityManager cManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo nInfo = cManager.getActiveNetworkInfo();
+        return nInfo != null && nInfo.isConnected();
     }
 }
