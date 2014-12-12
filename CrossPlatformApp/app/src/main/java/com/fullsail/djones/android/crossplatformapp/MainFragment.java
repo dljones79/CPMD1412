@@ -28,6 +28,8 @@ public class MainFragment extends Fragment {
     Button nAddButton;
     Button nLogButton;
 
+    public static final String TAG = "MainFragment.TAG";
+
     public MainFragment() {
         // Required empty public constructor
     }
@@ -75,7 +77,13 @@ public class MainFragment extends Fragment {
                 ParseUser.logOut();
 
                 // Restart main activity and clear out activity stack
+
+
                 Intent intent = new Intent(getActivity(), MainActivity.class);
+                intent.putExtra("clear_stack", true);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                        Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                        Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 getActivity().finish();
             }
@@ -84,6 +92,4 @@ public class MainFragment extends Fragment {
 
 
     }
-
-
 }

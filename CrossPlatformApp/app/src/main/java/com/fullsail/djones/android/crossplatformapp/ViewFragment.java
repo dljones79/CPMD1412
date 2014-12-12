@@ -7,22 +7,30 @@
 package com.fullsail.djones.android.crossplatformapp;
 
 
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -35,6 +43,7 @@ public class ViewFragment extends Fragment {
     ArrayAdapter<String> listAdapter;
     ListView listView;
     ItemAdapter itemAdapter;
+    Button editButton;
 
     public ViewFragment() {
         // Required empty public constructor
@@ -53,6 +62,7 @@ public class ViewFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         listView = (ListView) getView().findViewById(R.id.listView);
+        editButton = (Button) getView().findViewById(R.id.editButton);
 
         // Query Parse and by using ItemAdapter, populate the listview
         ParseQuery<ParseObject> pQuery = ParseQuery.getQuery("Item");
@@ -66,20 +76,91 @@ public class ViewFragment extends Fragment {
             }
         });
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.i("Item: ", "Pressed");
+                ParseObject parseObject = (ParseObject) itemAdapter.getItem(position);
+                final String objId = parseObject.getObjectId().toString();
+                Log.i("Object Id: ", objId);
+                final AlertDialog.Builder editAlert = new AlertDialog.Builder(getActivity());
+                final EditText quantity = new EditText(getActivity());
+                editAlert.setView(quantity);
+                editAlert.setMessage("Enter a new Quantity.");
+                editAlert.setPositiveButton("Update", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        final String qty = quantity.getText().toString().trim();
+                        if (!testQuantity(qty) || quantity.getText().toString() == "") {
+                            AlertDialog.Builder errorAlert = new AlertDialog.Builder(getActivity());
+                            errorAlert.setMessage("You must enter a valid quantity.");
+                            errorAlert.setPositiveButton("Quantity Error!", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            });
+                            errorAlert.show();
+                        } else {
+                            Log.i("Quantity: ", "Is Numeric");
+                            ParseQuery<ParseObject> pQuery = ParseQuery.getQuery("Item");
+                            pQuery.getInBackground(objId, new GetCallback<ParseObject>() {
+                                @Override
+                                public void done(ParseObject parseObject, ParseException e) {
+                                    if (e == null) {
+                                        Integer convertedInt = Integer.parseInt(qty);
+                                        parseObject.put("quantity", convertedInt);
+                                        parseObject.saveInBackground();
+                                    }
+                                }
+                            });
+                            ViewFragment frag = new ViewFragment();
+                            getFragmentManager().beginTransaction().replace(R.id.viewContainer, frag).commit();
+                        }
+                    }
+                });
+                editAlert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                editAlert.show();
+            }
+        });
+
         // User may longclick to delete an item
-       listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
            @Override
            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 
                ParseObject parseObject = (ParseObject) itemAdapter.getItem(position);
-               parseObject.deleteInBackground();
+               final String objId = parseObject.getObjectId().toString();
+               ParseQuery<ParseObject> pQuery = ParseQuery.getQuery("Item");
+               pQuery.getInBackground(objId, new GetCallback<ParseObject>() {
+                   @Override
+                   public void done(ParseObject parseObject, ParseException e) {
+                       parseObject.deleteInBackground();
+                       ViewFragment frag = new ViewFragment();
+                       getFragmentManager().beginTransaction().replace(R.id.viewContainer, frag).commit();
+                   }
+               });
 
-               ViewFragment frag = new ViewFragment();
-               getFragmentManager().beginTransaction().replace(R.id.viewContainer, frag).commit();
+               Log.i("Long Press: ", "Item deleted.");
 
                return true;
            }
-       });
+         });
 
+
+    }
+
+    // Validate numeric text
+    private boolean testQuantity(String quantity){
+        String QUANTITY_PATTERN = "^([1-9][0-9]{0,2})?(\\.[0-9]?)?$";
+        Pattern pattern = Pattern.compile(QUANTITY_PATTERN);
+        Matcher matcher = pattern.matcher(quantity);
+        return matcher.matches();
     }
 }

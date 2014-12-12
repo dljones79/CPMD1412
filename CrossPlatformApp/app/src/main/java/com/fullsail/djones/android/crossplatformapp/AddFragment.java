@@ -22,6 +22,9 @@ import com.parse.ParseACL;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -73,6 +76,8 @@ public class AddFragment extends Fragment {
                             })
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .show();
+                } else if (!testQuantity(nQtyText.getText().toString())) {
+                    nQtyText.setError("Invalid Quantity.");
                 } else {
 
                     // Create a new ParseObject to save to server
@@ -92,6 +97,13 @@ public class AddFragment extends Fragment {
         });
     }
 
+    // Validate numeric text
+    private boolean testQuantity(String quantity){
+        String QUANTITY_PATTERN = "^([1-9][0-9]{0,2})?(\\.[0-9]?)?$";
+        Pattern pattern = Pattern.compile(QUANTITY_PATTERN);
+        Matcher matcher = pattern.matcher(quantity);
+        return matcher.matches();
+    }
 
 
 }
