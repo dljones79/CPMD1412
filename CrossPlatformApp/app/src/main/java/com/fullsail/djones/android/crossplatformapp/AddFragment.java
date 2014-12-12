@@ -64,7 +64,9 @@ public class AddFragment extends Fragment {
         nAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (nItemText.getText() == "" || nQtyText.getText() == "") {
+                String itemText = nItemText.getText().toString().trim();
+                String qtyText = nQtyText.getText().toString().trim();
+                if (itemText.length() == 0 || qtyText.length() == 0) {
                     new AlertDialog.Builder(getActivity())
                             .setTitle("Error")
                             .setMessage("You must enter an item and a quantity.")
@@ -76,7 +78,7 @@ public class AddFragment extends Fragment {
                             })
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .show();
-                } else if (!testQuantity(nQtyText.getText().toString())) {
+                } else if (!testQuantity(nQtyText.getText().toString()) ) {
                     nQtyText.setError("Invalid Quantity.");
                 } else {
 
