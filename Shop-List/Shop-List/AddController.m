@@ -48,6 +48,11 @@
     [newItem saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (!error){
             NSLog(@"Saved");
+            itemName.text = @"";
+            quantity.text = @"";
+            
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Item Saved" message:@"Your item has been saved." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+            [alert show];
         } else {
             NSLog(@"Error Saving");
         }

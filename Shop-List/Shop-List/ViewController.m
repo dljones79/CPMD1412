@@ -59,8 +59,10 @@
 -(IBAction)onLog:(id)sender{
     if ([PFUser currentUser]){
         [PFUser logOut];
-        ViewController *newView = [[ViewController alloc]init];
-        [self presentViewController:newView animated:true completion:nil];
+        PFLogInViewController *login = [[PFLogInViewController alloc] init];
+        login.delegate = self;
+        login.signUpController.delegate = self;
+        [self presentViewController:login animated:YES completion:nil];
     }
 }
 

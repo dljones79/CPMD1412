@@ -44,6 +44,11 @@
             NSLog(@"Query Bad.");
         }
     }];
+    
+    // Add a swipe gesture recognizer
+    UISwipeGestureRecognizer *swipeRecognizer = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(handleSwipeRight:)];
+    [swipeRecognizer setDirection:(UISwipeGestureRecognizerDirectionRight)];
+    [itemTable addGestureRecognizer:swipeRecognizer];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -85,9 +90,19 @@
 
 -(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    
+}
+
+-(IBAction)onBack:(id)sender{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void)handleSwipeRight:(UISwipeGestureRecognizer *)gestureRecognizer{
+    CGPoint loc = [gestureRecognizer locationInView:itemTable];
+    NSIndexPath *indexPath = [itemTable indexPathForRowAtPoint:loc];
+    
     PFObject *pObj = [itemArray objectAtIndex:indexPath.row];
-    [pObj removeObjectForKey:@"item"];
-    [pObj saveInBackground];
+    [pObj deleteInBackground];
     
     // Create a query
     PFQuery *itemQuery = [PFQuery queryWithClassName:@"Item"];
@@ -104,10 +119,7 @@
             NSLog(@"Query Bad.");
         }
     }];
-}
-
--(IBAction)onBack:(id)sender{
-    [self dismissViewControllerAnimated:YES completion:nil];
+    
 }
 
 /*
