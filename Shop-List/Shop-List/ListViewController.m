@@ -49,6 +49,9 @@
     UISwipeGestureRecognizer *swipeRecognizer = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(handleSwipeRight:)];
     [swipeRecognizer setDirection:(UISwipeGestureRecognizerDirectionRight)];
     [itemTable addGestureRecognizer:swipeRecognizer];
+    
+    // Timer for polling server
+    [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(timerFired:) userInfo:nil repeats:YES];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -88,9 +91,14 @@
     return newCell;
 }
 
--(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    pObject = [itemArray objectAtIndex:indexPath.row];
+    objId = pObject.objectId;
     
+    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Edit" message:@"Enter a new quantity:" delegate:self cancelButtonTitle:@"Save" otherButtonTitles:nil, nil];
+    alert.alertViewStyle = UIAlertViewStylePlainTextInput;
+    [alert show];
 }
 
 -(IBAction)onBack:(id)sender{
@@ -120,6 +128,58 @@
         }
     }];
     
+}
+
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    NSLog(@"%@", [alertView textFieldAtIndex:0].text);
+    
+    NSString *updatedQuantity = [alertView textFieldAtIndex:0].text;
+    NSNumberFormatter *formatter = [[NSNumberFormatter alloc]init];
+    [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
+    NSNumber *number = [formatter numberFromString:updatedQuantity];
+    
+    PFQuery *parseQuery = [PFQuery queryWithClassName:@"Item"];
+    [parseQuery getObjectInBackgroundWithId:objId block:^(PFObject *object, NSError *error) {
+        object[@"quantity"] = number;
+        [object saveInBackground];
+    }];
+    
+    // Create a query
+    PFQuery *itemQuery = [PFQuery queryWithClassName:@"Item"];
+    [itemQuery whereKeyExists:@"item" ];
+    
+    // Run query
+    [itemQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (!error){
+            NSLog(@"Query Good.");
+            NSLog(@"Array Size: %lu", (unsigned long)objects.count);
+            itemArray = objects;
+            [itemTable reloadData];
+        } else {
+            NSLog(@"Query Bad.");
+        }
+    }];
+    
+    [itemTable reloadData];
+    
+}
+
+-(void)timerFired:(NSTimer*)timer {
+    // Create a query
+    PFQuery *itemQuery = [PFQuery queryWithClassName:@"Item"];
+    [itemQuery whereKeyExists:@"item" ];
+    
+    // Run query
+    [itemQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (!error){
+            NSLog(@"Query Good.");
+            NSLog(@"Array Size: %lu", (unsigned long)objects.count);
+            itemArray = objects;
+            [itemTable reloadData];
+        } else {
+            NSLog(@"Query Bad.");
+        }
+    }];
 }
 
 /*

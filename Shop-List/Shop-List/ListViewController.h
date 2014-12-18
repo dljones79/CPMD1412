@@ -12,7 +12,7 @@
 #import "ViewController.h"
 #import "CustomCell.h"
 
-@interface ListViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+@interface ListViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate>
 {
     IBOutlet UITableView *itemTable;
     IBOutlet UIBarButtonItem *backButton;
@@ -21,6 +21,9 @@
     NSString *itemName;
     NSString *quantity;
     NSNumber *qty;
+    NSString *objId;
+    
+    PFObject *pObject;
 }
 
 @end
