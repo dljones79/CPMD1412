@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6333B6091A4391E000E4F9F0 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 6333B6081A4391E000E4F9F0 /* Reachability.m */; };
 		633C7AAE1A33C27600D54E0F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 633C7AAD1A33C27600D54E0F /* main.m */; };
 		633C7AB11A33C27600D54E0F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 633C7AB01A33C27600D54E0F /* AppDelegate.m */; };
 		633C7AB41A33C27600D54E0F /* Shop_List.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 633C7AB21A33C27600D54E0F /* Shop_List.xcdatamodeld */; };
@@ -46,6 +47,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		6333B6071A4391E000E4F9F0 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		6333B6081A4391E000E4F9F0 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		633C7AA81A33C27600D54E0F /* Shop-List.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Shop-List.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		633C7AAC1A33C27600D54E0F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		633C7AAD1A33C27600D54E0F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -152,6 +155,8 @@
 		633C7AAA1A33C27600D54E0F /* Shop-List */ = {
 			isa = PBXGroup;
 			children = (
+				6333B6071A4391E000E4F9F0 /* Reachability.h */,
+				6333B6081A4391E000E4F9F0 /* Reachability.m */,
 				633C7AAF1A33C27600D54E0F /* AppDelegate.h */,
 				633C7AB01A33C27600D54E0F /* AppDelegate.m */,
 				633C7AB51A33C27600D54E0F /* ViewController.h */,
@@ -299,6 +304,7 @@
 			files = (
 				633C7B021A33E5AA00D54E0F /* AddController.m in Sources */,
 				633C7AF91A33D39100D54E0F /* ListViewController.m in Sources */,
+				6333B6091A4391E000E4F9F0 /* Reachability.m in Sources */,
 				633C7AB11A33C27600D54E0F /* AppDelegate.m in Sources */,
 				633C7AFF1A33E08400D54E0F /* CustomCell.m in Sources */,
 				633C7AAE1A33C27600D54E0F /* main.m in Sources */,

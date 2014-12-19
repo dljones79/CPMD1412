@@ -11,6 +11,7 @@
 #import <ParseUI/ParseUI.h>
 #import "ViewController.h"
 #import "CustomCell.h"
+#import "Reachability.h"
 
 @interface ListViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate>
 {
@@ -25,5 +26,7 @@
     
     PFObject *pObject;
 }
+
+-(BOOL)isConnected;
 
 @end

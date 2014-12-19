@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <Parse/Parse.h>
 #import <ParseUI/ParseUI.h>
+#import "Reachability.h"
 
 @interface ViewController : UIViewController <PFLogInViewControllerDelegate, PFSignUpViewControllerDelegate>
 {
@@ -18,6 +19,7 @@
 }
 
 -(IBAction)onLog:(id)sender;
+-(BOOL)isConnected;
 
 @end
 

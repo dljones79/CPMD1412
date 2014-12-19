@@ -28,30 +28,37 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    // Test network
+    if (![self isConnected]){
+        // no connection
+    } else {
+        // connection
+        // Create a query
+        PFQuery *itemQuery = [PFQuery queryWithClassName:@"Item"];
+        [itemQuery whereKeyExists:@"item" ];
+        
+        // Run query
+        [itemQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            if (!error){
+                NSLog(@"Query Good.");
+                NSLog(@"Array Size: %lu", (unsigned long)objects.count);
+                itemArray = objects;
+                [itemTable reloadData];
+            } else {
+                NSLog(@"Query Bad.");
+            }
+        }];
+        
+        // Timer for polling server
+        [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(timerFired:) userInfo:nil repeats:YES];
+    }
 
-    // Create a query
-    PFQuery *itemQuery = [PFQuery queryWithClassName:@"Item"];
-    [itemQuery whereKeyExists:@"item" ];
-    
-    // Run query
-    [itemQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        if (!error){
-            NSLog(@"Query Good.");
-            NSLog(@"Array Size: %lu", (unsigned long)objects.count);
-            itemArray = objects;
-            [itemTable reloadData];
-        } else {
-            NSLog(@"Query Bad.");
-        }
-    }];
-    
     // Add a swipe gesture recognizer
     UISwipeGestureRecognizer *swipeRecognizer = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(handleSwipeRight:)];
     [swipeRecognizer setDirection:(UISwipeGestureRecognizerDirectionRight)];
     [itemTable addGestureRecognizer:swipeRecognizer];
     
-    // Timer for polling server
-    [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(timerFired:) userInfo:nil repeats:YES];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -66,18 +73,6 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    /*
-    static NSString *CellIdentifier = @"Cell";
-    
-    UITableViewCell *newCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (newCell == nil){
-        newCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-    }
-    
-    PFObject *item = [itemArray objectAtIndex:indexPath.row];
-    [newCell.textLabel setText:[item objectForKey:@"item"]];
-    */
-    
     PFObject *pObj = [itemArray objectAtIndex:indexPath.row];
     itemName = [pObj objectForKey:@"item"];
     qty = [pObj objectForKey:@"quantity"];
@@ -133,35 +128,45 @@
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
     NSLog(@"%@", [alertView textFieldAtIndex:0].text);
     
+    // Number validation via regular expression
+    NSString *regEx = @"^([1-9][0-9]{0,2})?(\\.[0-9]?)?$";
+    NSPredicate *numPred = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regEx];
+    
     NSString *updatedQuantity = [alertView textFieldAtIndex:0].text;
-    NSNumberFormatter *formatter = [[NSNumberFormatter alloc]init];
-    [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
-    NSNumber *number = [formatter numberFromString:updatedQuantity];
     
-    PFQuery *parseQuery = [PFQuery queryWithClassName:@"Item"];
-    [parseQuery getObjectInBackgroundWithId:objId block:^(PFObject *object, NSError *error) {
-        object[@"quantity"] = number;
-        [object saveInBackground];
-    }];
-    
-    // Create a query
-    PFQuery *itemQuery = [PFQuery queryWithClassName:@"Item"];
-    [itemQuery whereKeyExists:@"item" ];
-    
-    // Run query
-    [itemQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        if (!error){
-            NSLog(@"Query Good.");
-            NSLog(@"Array Size: %lu", (unsigned long)objects.count);
-            itemArray = objects;
-            [itemTable reloadData];
-        } else {
-            NSLog(@"Query Bad.");
-        }
-    }];
-    
-    [itemTable reloadData];
-    
+    if (![numPred evaluateWithObject:updatedQuantity] || [updatedQuantity isEqualToString:@""]){
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Invalid Input" message:@"You must enter a valid quantity." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+        [alert show];
+    } else {
+        NSNumberFormatter *formatter = [[NSNumberFormatter alloc]init];
+        [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
+        NSNumber *number = [formatter numberFromString:updatedQuantity];
+        
+        PFQuery *parseQuery = [PFQuery queryWithClassName:@"Item"];
+        [parseQuery getObjectInBackgroundWithId:objId block:^(PFObject *object, NSError *error) {
+            object[@"quantity"] = number;
+            [object saveInBackground];
+        }];
+        
+        // Create a query
+        PFQuery *itemQuery = [PFQuery queryWithClassName:@"Item"];
+        [itemQuery whereKeyExists:@"item" ];
+        
+        // Run query
+        [itemQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            if (!error){
+                NSLog(@"Query Good.");
+                NSLog(@"Array Size: %lu", (unsigned long)objects.count);
+                itemArray = objects;
+                [itemTable reloadData];
+            } else {
+                NSLog(@"Query Bad.");
+            }
+        }];
+        
+        [itemTable reloadData];
+    }
+
 }
 
 -(void)timerFired:(NSTimer*)timer {
@@ -180,6 +185,12 @@
             NSLog(@"Query Bad.");
         }
     }];
+}
+
+-(BOOL)isConnected{
+    Reachability *networkReachable = [Reachability reachabilityForInternetConnection];
+    NetworkStatus netStatus = [networkReachable currentReachabilityStatus];
+    return netStatus != NotReachable;
 }
 
 /*

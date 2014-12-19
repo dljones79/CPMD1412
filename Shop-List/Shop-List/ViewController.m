@@ -19,13 +19,22 @@
 {
     [super viewDidAppear:animated];
     
-    if ([PFUser currentUser]){
-        
+    // Test network
+    if (![self isConnected]){
+        // not network connection
+        NSLog(@"No Network Connection.");
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Network Error." message:@"You must connect to a network to access full application features." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+        [alert show];
     } else {
-        PFLogInViewController *login = [[PFLogInViewController alloc] init];
-        login.delegate = self;
-        login.signUpController.delegate = self;
-        [self presentViewController:login animated:YES completion:nil];
+        // network is connected
+        if ([PFUser currentUser]){
+            
+        } else {
+            PFLogInViewController *login = [[PFLogInViewController alloc] init];
+            login.delegate = self;
+            login.signUpController.delegate = self;
+            [self presentViewController:login animated:YES completion:nil];
+        }
     }
 }
 
@@ -64,6 +73,12 @@
         login.signUpController.delegate = self;
         [self presentViewController:login animated:YES completion:nil];
     }
+}
+
+-(BOOL)isConnected{
+    Reachability *networkReachable = [Reachability reachabilityForInternetConnection];
+    NetworkStatus netStatus = [networkReachable currentReachabilityStatus];
+    return netStatus != NotReachable;
 }
 
 @end
