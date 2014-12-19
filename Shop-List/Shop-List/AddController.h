@@ -10,6 +10,7 @@
 #import <Parse/Parse.h>
 #import <ParseUI/ParseUI.h>
 #import "ViewController.h"
+#import "Reachability.h"
 
 @interface AddController : UIViewController
 {
@@ -20,5 +21,6 @@
 }
 
 -(IBAction)onAdd:(id)sender;
+-(BOOL)isConnected;
 
 @end

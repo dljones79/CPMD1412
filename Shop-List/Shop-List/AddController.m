@@ -24,6 +24,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    if (![self isConnected]){
+        // no connection
+        addButton.enabled = false;
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Network Error." message:@"You must connect to a network to add items to your list." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+        [alert show];
+    } else {
+        addButton.enabled = true;
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -75,6 +84,12 @@
 
 -(IBAction)onBack:(id)sender{
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(BOOL)isConnected{
+    Reachability *networkReachable = [Reachability reachabilityForInternetConnection];
+    NetworkStatus netStatus = [networkReachable currentReachabilityStatus];
+    return netStatus != NotReachable;
 }
 
 @end
